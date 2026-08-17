@@ -1,0 +1,31 @@
+flowchart TD
+  subgraph ingest ["internal/ingest"]
+    webhook["Handle"]
+  end
+  subgraph api ["internal/api"]
+    routes["Routes"]
+  end
+  subgraph render ["internal/render"]
+    receipt["Receipt"]
+  end
+  subgraph deliver ["internal/deliver"]
+    email["Email"]
+    push["Push"]
+  end
+  subgraph queue ["internal/queue"]
+    consume["Consume"]
+  end
+  subgraph db ["db"]
+    recipient["Recipient"]
+    notification["Notification"]
+    preference["Preference"]
+  end
+  webhook -->|"charge.succeeded"| receipt
+  webhook -->|"charge.failed"| queue
+  receipt --> email
+  receipt --> push
+  queue --> consume
+  consume --> email
+  consume --> push
+  routes --> db
+  routes --> webhook
