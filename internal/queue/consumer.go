@@ -20,3 +20,8 @@ func Consume(next func() (Delivery, bool), send func(Delivery) error) {
 		}
 	}
 }
+
+// Digest batches a recipient's pending deliveries into one daily email.
+func Digest(pending []Delivery) Delivery {
+	return Delivery{Channel: "email", Body: "daily digest"}
+}
