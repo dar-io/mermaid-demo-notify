@@ -1,0 +1,34 @@
+flowchart TD
+  subgraph api ["API Layer"]
+    direction TB
+    orders_ts["orders.ts"]
+    webhooks_ts["webhooks.ts"]
+  end
+  subgraph billing ["Billing Layer"]
+    direction TB
+    charge_ts["charge.ts"]
+  end
+  subgraph queue ["Queue Layer"]
+    direction TB
+    worker_ts["worker.ts"]
+  end
+  subgraph webhooks ["Webhooks Layer"]
+    direction TB
+    dispatch_ts["dispatch.ts"]
+  end
+  subgraph db ["Database"]
+    direction TB
+    customers_table["customers"]
+    orders_table["orders"]
+    charges_table["charges"]
+    webhook_deliveries_table["webhook_deliveries"]
+  end
+  orders_ts --> charge_ts
+  orders_ts --> worker_ts
+  webhooks_ts --> charge_ts
+  webhooks_ts --> dispatch_ts
+  charge_ts --> orders_table
+  charge_ts --> charges_table
+  worker_ts --> charges_table
+  dispatch_ts --> webhook_deliveries_table
+  dispatch_ts -->|"POST to"| notify_service["mermaid-demo-notify"]
